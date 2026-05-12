@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — VECTRUM</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #1a1a1a;
+  background: #ffffff;
+}
+header {
+  border-bottom: 2px solid #1a1a1a;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.08em; color: #1a1a1a; text-decoration: none; }
+nav a { font-size: 0.85rem; color: #555; text-decoration: none; margin-left: 1.5rem; }
+nav a:hover { color: #1a1a1a; }
+.container { max-width: 760px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.page-meta { font-size: 0.72rem; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+.subtitle { font-size: 0.95rem; color: #555; margin-bottom: 3rem; border-bottom: 1px solid #e5e5e5; padding-bottom: 2rem; }
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+.contact-card {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.contact-card h2 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  margin-bottom: 0.75rem;
+}
+.contact-card p {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.35rem;
+}
+.contact-card a {
+  color: #1a1a1a;
+  font-weight: 600;
+  text-decoration: none;
+}
+.contact-card a:hover { text-decoration: underline; }
+.product-list {
+  margin-top: 2.5rem;
+}
+.product-list h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+.product-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+.product-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 0.15rem;
+}
+.product-info h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+.product-info p {
+  font-size: 0.88rem;
+  color: #555;
+  margin: 0;
+}
+.product-info a {
+  color: #1a1a1a;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+  display: inline-block;
+}
+.response-note {
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  background: #f5f5f5;
+  border-left: 3px solid #1a1a1a;
+  font-size: 0.88rem;
+  color: #555;
+}
+footer {
+  border-top: 1px solid #e5e5e5;
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #999;
+}
+footer a { color: #555; text-decoration: none; margin: 0 0.75rem; }
+@media (max-width: 520px) {
+  header { padding: 1rem; flex-direction: column; gap: 0.75rem; }
+  .container { padding: 2rem 1rem 4rem; }
+  h1 { font-size: 1.7rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="https://vectrum.com.au">VECTRUM</a>
+  <nav>
+    <a href="https://vectrum.com.au/privacy">Privacy</a>
+    <a href="https://vectrum.com.au/terms">Terms</a>
+    <a href="https://vectrum.com.au/contact">Contact</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="page-meta">Support · Get in touch</div>
+  <h1>Contact VECTRUM</h1>
+  <p class="subtitle">We're a small team — we read every message and aim to respond within one business day. For product-specific questions, mention which product you're using.</p>
+
+  <div class="contact-grid">
+    <div class="contact-card">
+      <h2>General Enquiries</h2>
+      <p>Questions about VECTRUM, our products, or anything else:</p>
+      <p><a href="mailto:connect@vectrum.com.au">connect@vectrum.com.au</a></p>
+    </div>
+    <div class="contact-card">
+      <h2>Support</h2>
+      <p>Billing, account access, or technical issues:</p>
+      <p><a href="mailto:connect@vectrum.com.au">connect@vectrum.com.au</a></p>
+      <p style="font-size:0.82rem; color:#999; margin-top:0.5rem;">Include your account email and product name.</p>
+    </div>
+    <div class="contact-card">
+      <h2>Business</h2>
+      <p>Partnerships, press, or business enquiries:</p>
+      <p><a href="mailto:connect@vectrum.com.au">connect@vectrum.com.au</a></p>
+    </div>
+    <div class="contact-card">
+      <h2>Legal & Privacy</h2>
+      <p>Privacy requests, data deletion, or legal matters:</p>
+      <p><a href="mailto:connect@vectrum.com.au">connect@vectrum.com.au</a></p>
+      <p style="font-size:0.82rem; color:#999; margin-top:0.5rem;">ABN: 94 327 331 129</p>
+    </div>
+  </div>
+
+  <div class="product-list">
+    <h2>Our Products</h2>
+
+    <div class="product-item">
+      <div class="product-badge">Dosetto</div>
+      <div class="product-info">
+        <h3>Dosetto</h3>
+        <p>For support with your Dosetto account, subscription, or technical issues.</p>
+        <a href="https://dosetto.com" target="_blank">dosetto.com →</a>
+      </div>
+    </div>
+
+    <div class="product-item">
+      <div class="product-badge">NoSpinDoc</div>
+      <div class="product-info">
+        <h3>NoSpinDoc</h3>
+        <p>AI-powered second opinions. For support with your NoSpinDoc account or subscription.</p>
+        <a href="https://nospindoc.com" target="_blank">nospindoc.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="response-note">
+    <strong>Response time:</strong> We aim to respond to all enquiries within 1 business day (AEST). We are based in Australia and operate Monday to Friday.
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 VECTRUM · ABN 94 327 331 129 · All rights reserved</p>
+  <p style="margin-top:0.5rem;">
+    <a href="https://vectrum.com.au/privacy">Privacy Policy</a>
+    <a href="https://vectrum.com.au/terms">Terms of Service</a>
+    <a href="https://vectrum.com.au/contact">Contact</a>
+  </p>
+</footer>
+
+</body>
+</html>
