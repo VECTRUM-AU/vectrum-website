@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SectorDrop — RF Sector Visualizer by VECTRUM</title>
+<meta name="description" content="Drop your Excel file. Get Google Earth-ready KMZ sectors in seconds. Free RF sector visualizer for telecom engineers. No data leaves your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal:    #19DBC1;
+  --navy:    #0A2A54;
+  --bg:      #000000;
+  --bg2:     #080808;
+  --bg3:     #0f0f0f;
+  --text:    #eef2f7;
+  --text2:   #8fa3be;
+  --text3:   #4a6080;
+  --border:  rgba(25,219,193,0.15);
+  --border2: rgba(25,219,193,0.08);
+  --glow:    rgba(25,219,193,0.12);
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2.5rem;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border2);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  background: linear-gradient(135deg, #19DBC1, #eef2f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-sep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+}
+
+.nav-product {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--teal); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(25,219,193,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(25,219,193,0.06);
+  border: 1px solid rgba(25,219,193,0.2);
+  padding: 0.35rem 1rem;
+  border-radius: 2px;
+  margin-bottom: 2rem;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 .grad {
+  background: linear-gradient(135deg, #19DBC1 0%, #6ee7d8 50%, #eef2f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h1 .white { color: var(--text); }
+
+.hero-sub {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--text2);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.hero-privacy {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-privacy::before {
+  content: '🔒';
+  font-size: 0.7rem;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-primary {
+  padding: 0.85rem 2rem;
+  background: var(--teal);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover {
+  background: #6ee7d8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(25,219,193,0.25);
+}
+
+.btn-ghost {
+  padding: 0.85rem 2rem;
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+.scroll-hint::after {
+  content: '';
+  display: block;
+  width: 1px; height: 32px;
+  background: linear-gradient(to bottom, var(--teal), transparent);
+}
+
+/* TEAL LINE */
+.teal-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: 0.3;
+}
+
+/* SECTION BASE */
+section {
+  position: relative;
+  z-index: 1;
+  padding: 6rem 2rem;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 20px; height: 1px;
+  background: var(--teal);
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.section-sub {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 500px;
+  margin-bottom: 3.5rem;
+}
+
+/* APP SECTION */
+#app { background: var(--bg2); border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2); }
+
+.app-wrapper {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* PANEL */
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.panel-body { padding: 1.25rem; }
+
+/* DROPZONE */
+.dropzone {
+  border: 2px dashed rgba(25,219,193,0.25);
+  border-radius: 6px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+.dropzone:hover, .dropzone.drag-over {
+  border-color: var(--teal);
+  background: rgba(25,219,193,0.04);
+}
+.dropzone input[type=file] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+
+.dropzone-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.dropzone-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.dropzone-hint {
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-weight: 300;
+}
+
+.file-loaded {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(25,219,193,0.06);
+  border: 1px solid rgba(25,219,193,0.15);
+  border-radius: 4px;
+  margin-bottom: 1.25rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: 0.06em;
+}
+.file-loaded.visible { display: flex; }
+
+/* FORM FIELDS */
+.field-group { margin-bottom: 1rem; }
+
+.field-label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.4rem;
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.field-input:focus {
+  outline: none;
+  border-color: rgba(25,219,193,0.4);
+}
+.field-input option { background: #111; }
+
+.color-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+}
+
+.color-field input[type=color] {
+  width: 22px; height: 22px;
+  border: none; background: none;
+  cursor: pointer; border-radius: 3px;
+  padding: 0;
+}
+
+.color-field .rat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  flex: 1;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border2);
+  margin: 1.25rem 0;
+}
+
+.btn-generate {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--teal);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-generate:hover {
+  background: #6ee7d8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(25,219,193,0.3);
+}
+.btn-generate:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* PREVIEW PANEL */
+.preview-panel {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preview-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.preview-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+
+.preview-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text3);
+}
+
+.preview-empty-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.preview-empty p {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* SVG PREVIEW */
+#sector-svg {
+  width: 100%; height: 100%;
+  display: none;
+}
+
+/* DOWNLOAD STRIP */
+.download-strip {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  display: none;
+}
+.download-strip.visible { display: flex; }
+
+.download-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+
+.download-info span {
+  color: var(--teal);
+}
+
+.btn-download {
+  padding: 0.6rem 1.5rem;
+  background: var(--teal);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-download:hover {
+  background: #6ee7d8;
+  box-shadow: 0 4px 16px rgba(25,219,193,0.25);
+}
+
+/* ERROR / SUCCESS */
+.msg {
+  padding: 0.65rem 0.9rem;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  display: none;
+}
+.msg.visible { display: block; }
+.msg.error { background: rgba(255,60,60,0.08); border: 1px solid rgba(255,60,60,0.25); color: #ff6b6b; }
+.msg.success { background: rgba(25,219,193,0.08); border: 1px solid rgba(25,219,193,0.2); color: var(--teal); }
+
+/* HOW IT WORKS */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.step-card {
+  padding: 1.75rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.25s;
+}
+
+.step-card:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(25,219,193,0.06);
+}
+
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.05em;
+  color: rgba(25,219,193,0.12);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.6rem;
+}
+
+.step-desc {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* FEATURES */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+
+.feature-card:hover {
+  border-color: var(--border);
+  background: var(--bg3);
+}
+
+.feature-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.feature-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+  font-size: 0.83rem;
+  font-weight: 300;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* TEMPLATE SECTION */
+.template-block {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.template-block table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+}
+
+.template-block th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  font-weight: 500;
+}
+
+.template-block td {
+  padding: 0.5rem 0.75rem;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border2);
+  font-weight: 400;
+}
+
+.template-block tr:last-child td { border-bottom: none; }
+
+.template-note {
+  font-size: 0.8rem;
+  color: var(--text3);
+  margin-top: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.btn-template {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  background: transparent;
+  color: var(--teal);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1.25rem;
+  text-decoration: none;
+}
+.btn-template:hover { border-color: var(--teal); background: rgba(25,219,193,0.04); }
+
+/* SUPPORT STRIP */
+.support-strip {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.support-strip h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 1rem;
+}
+
+.support-strip p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text2);
+  max-width: 480px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+
+.bmac-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2rem;
+  background: #FFDD00;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.bmac-btn:hover {
+  background: #FFE930;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,221,0,0.25);
+}
+
+.bmac-note {
+  margin-top: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+/* LEGAL STRIP */
+.legal-strip {
+  background: var(--bg);
+  border-top: 1px solid var(--border2);
+  padding: 2rem 2rem;
+  text-align: center;
+}
+
+.legal-strip p {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+}
+
+.legal-strip a {
+  color: var(--text3);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border2);
+  transition: color 0.2s;
+}
+.legal-strip a:hover { color: var(--teal); }
+
+/* FOOTER */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border2);
+  padding: 2rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footer-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #19DBC1, #eef2f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+
+.footer-right {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text3);
+  text-align: right;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .app-wrapper { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 1rem 1.25rem; }
+}
+@media (max-width: 600px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .color-row { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://vectrum.com.au">
+    <span class="nav-wordmark">VECTRUM</span>
+    <span class="nav-sep">/</span>
+    <span class="nav-product">SectorDrop</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#app">Generate KMZ</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#template">Template</a></li>
+    <li><a href="https://vectrum.com.au">Vectrum</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-badge">Free RF Sector Visualizer</div>
+  <h1>
+    <span class="white">Excel in.</span><br>
+    <span class="grad">KMZ out.</span><br>
+    <span class="white">5 seconds.</span>
+  </h1>
+  <p class="hero-sub">Drop your site list. SectorDrop builds stacked multi-RAT sector polygons — 2G, 3G, 4G, 5G — and exports a Google Earth-ready KMZ with correct azimuth, height, and colour layering.</p>
+  <div class="hero-privacy">Your Excel file never leaves your browser</div>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Generate KMZ Now</button>
+    <a class="btn-ghost" href="#template">Download Template</a>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<div class="teal-line"></div>
+
+<!-- APP -->
+<section id="app">
+  <div class="container">
+    <div class="section-label">Generator</div>
+    <h2 class="section-title">Drop. Configure. Export.</h2>
+    <p class="section-sub">All processing happens locally in your browser. No site data is transmitted. No account required.</p>
+
+    <div class="app-wrapper">
+
+      <!-- LEFT: CONTROLS -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">📂 Input &amp; Settings</div>
+          <div class="panel-body">
+
+            <!-- DROPZONE -->
+            <div class="dropzone" id="dropzone">
+              <input type="file" id="file-input" accept=".xlsx,.xls,.csv" />
+              <span class="dropzone-icon">📊</span>
+              <span class="dropzone-label">Drop Excel / CSV here</span>
+              <span class="dropzone-hint">or click to browse</span>
+            </div>
+
+            <div class="file-loaded" id="file-loaded">
+              ✓ <span id="file-name">No file</span>
+            </div>
+
+            <div class="msg error" id="msg-error"></div>
+            <div class="msg success" id="msg-success"></div>
+
+            <!-- COLUMN MAPPING -->
+            <div class="field-group">
+              <label class="field-label">Site ID Column</label>
+              <select class="field-input" id="col-site">
+                <option value="SiteID">SiteID</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Latitude Column</label>
+              <select class="field-input" id="col-lat">
+                <option value="Lat">Lat</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Longitude Column</label>
+              <select class="field-input" id="col-lon">
+                <option value="Lon">Lon</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">RAT Column (2G/3G/4G/5G)</label>
+              <select class="field-input" id="col-rat">
+                <option value="RAT">RAT</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Azimuth Column (0–360°)</label>
+              <select class="field-input" id="col-azimuth">
+                <option value="Azimuth">Azimuth</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Tower Height Column (AGL metres, optional)</label>
+              <select class="field-input" id="col-height">
+                <option value="none">— Not in data (use default)</option>
+                <option value="Height">Height</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Default Tower Height (metres AGL)</label>
+              <input class="field-input" type="number" id="default-height" value="30" min="0" max="500">
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- RAT COLOURS -->
+            <div class="field-group">
+              <label class="field-label">RAT Colours</label>
+              <div class="color-row">
+                <div class="color-field">
+                  <input type="color" id="color-2g" value="#FF4444">
+                  <span class="rat-label">2G</span>
+                </div>
+                <div class="color-field">
+                  <input type="color" id="color-3g" value="#FF9900">
+                  <span class="rat-label">3G</span>
+                </div>
+                <div class="color-field">
+                  <input type="color" id="color-4g" value="#19DBC1">
+                  <span class="rat-label">4G / LTE</span>
+                </div>
+                <div class="color-field">
+                  <input type="color" id="color-5g" value="#AA44FF">
+                  <span class="rat-label">5G / NR</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- SECTOR PARAMS -->
+            <div class="field-group">
+              <label class="field-label">Beamwidth (degrees)</label>
+              <select class="field-input" id="beamwidth">
+                <option value="65">65° (standard)</option>
+                <option value="90">90°</option>
+                <option value="120">120° (wide)</option>
+              </select>
+            </div>
+
+            <div class="divider"></div>
+
+            <button class="btn-generate" id="btn-generate" disabled>
+              ⚡ Generate KMZ
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div class="preview-panel">
+        <div class="preview-header">
+          <span class="preview-title">📡 Sector Preview</span>
+          <span class="preview-count" id="preview-count">—</span>
+        </div>
+        <div class="preview-canvas" id="preview-canvas">
+          <div class="preview-empty" id="preview-empty">
+            <span class="preview-empty-icon">🗺️</span>
+            <p>Load a file to preview sectors</p>
+          </div>
+          <svg id="sector-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 -1.5 3 3"></svg>
+        </div>
+        <div class="download-strip" id="download-strip">
+          <div class="download-info">
+            <span id="dl-count">0</span> sectors · <span id="dl-sites">0</span> sites · KMZ ready
+          </div>
+          <a class="btn-download" id="btn-download" href="#" download="SectorDrop.kmz">⬇ Download KMZ</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="teal-line"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">Workflow</div>
+    <h2 class="section-title">How it works.</h2>
+    <p class="section-sub">Four steps from spreadsheet to Google Earth in under ten seconds.</p>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">Prepare Excel</div>
+        <p class="step-desc">Your spreadsheet needs Site ID, Lat, Lon, RAT (2G/3G/4G/5G), Azimuth, and optionally tower height. Download our template to get started instantly.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">Drop &amp; Map</div>
+        <p class="step-desc">Drop your file into SectorDrop. Map your column names to the correct fields. Choose RAT colours and beamwidth.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Generate</div>
+        <p class="step-desc">SectorDrop calculates triangular sector polygons with correct azimuth bearings, stacked RAT lengths, and 3D height placement — entirely in your browser.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-title">Export to GE</div>
+        <p class="step-desc">Download the KMZ. Open in Google Earth Pro. Your sectors appear with coloured RAT layers, correct folders, and 3D tilt support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="teal-line"></div>
+
+<!-- FEATURES -->
+<section style="background:var(--bg2); border-top:1px solid var(--border2); border-bottom:1px solid var(--border2);">
+  <div class="container">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">Built for RF engineers.</h2>
+    <p class="section-sub">Everything a field engineer, optimizer, or contractor actually needs — nothing they don't.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">📶</span>
+        <div class="feature-title">Multi-RAT Stacking</div>
+        <p class="feature-desc">2G sectors are longest, 3G shorter, 4G shorter still, 5G shortest. Correct visual hierarchy so you can distinguish technology layers at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧭</span>
+        <div class="feature-title">Correct Azimuth Geometry</div>
+        <p class="feature-desc">Sectors point in the exact bearing you specify. Triangular polygon geometry built from the azimuth midpoint with configurable beamwidth.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏗️</span>
+        <div class="feature-title">3D Height Support</div>
+        <p class="feature-desc">Define tower height per site or use a global default. Sectors render at the correct AGL elevation in Google Earth's 3D view.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <div class="feature-title">Custom RAT Colours</div>
+        <p class="feature-desc">Pick any hex colour for each RAT. KMZ layers are named and coloured consistently so Google Earth folders match your colour scheme.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <div class="feature-title">100% Browser-Local</div>
+        <p class="feature-desc">Your site coordinates never leave your machine. No uploads, no servers, no logs. Suitable for operator data confidentiality requirements.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📁</span>
+        <div class="feature-title">Clean KMZ Structure</div>
+        <p class="feature-desc">Output includes separate Google Earth folders per RAT, descriptive placemarks with site info, and optimised polygon count for smooth rendering.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="teal-line"></div>
+
+<!-- TEMPLATE -->
+<section id="template">
+  <div class="container">
+    <div class="section-label">Data Format</div>
+    <h2 class="section-title">Excel template.</h2>
+    <p class="section-sub">Your spreadsheet needs these columns. Column names are flexible — you map them in the tool. Download the template to see the exact format.</p>
+
+    <div class="template-block">
+      <table>
+        <thead>
+          <tr>
+            <th>Column</th>
+            <th>Example</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SiteID</td><td>SITE_001</td><td>Any unique identifier</td></tr>
+          <tr><td>Lat</td><td>-33.8688</td><td>Decimal degrees (WGS84)</td></tr>
+          <tr><td>Lon</td><td>151.2093</td><td>Decimal degrees (WGS84)</td></tr>
+          <tr><td>RAT</td><td>4G</td><td>2G, 3G, 4G or 5G</td></tr>
+          <tr><td>Azimuth</td><td>45</td><td>0–360° from true north</td></tr>
+          <tr><td>Height</td><td>35</td><td>Optional. Tower AGL in metres</td></tr>
+        </tbody>
+      </table>
+      <p class="template-note">Each row = one sector. A 3-sector site has 3 rows with the same SiteID, Lat, Lon but different RAT/Azimuth values.</p>
+    </div>
+
+    <button class="btn-template" id="btn-dl-template">⬇ Download CSV Template</button>
+  </div>
+</section>
+
+<div class="teal-line"></div>
+
+<!-- SUPPORT -->
+<div class="support-strip" id="support">
+  <div class="container">
+    <h2>SectorDrop is <span style="color:var(--teal)">free</span>.</h2>
+    <p>No subscriptions. No accounts. No limits. If it saves you time on a project, buying a coffee keeps the lights on and future development happening.</p>
+    <a class="bmac-btn" href="https://buymeacoffee.com/vectrum" target="_blank" rel="noopener">
+      ☕ Buy me a coffee
+    </a>
+    <p class="bmac-note">Completely optional · No features locked behind payment</p>
+  </div>
+</div>
+
+<!-- LEGAL STRIP -->
+<div class="legal-strip">
+  <div class="container">
+    <p>VECTRUM · ABN 94 327 331 129 · SectorDrop is a free product of VECTRUM. <a href="https://vectrum.com.au/privacy">Privacy Policy</a> · <a href="https://vectrum.com.au/terms">Terms</a> · <a href="https://vectrum.com.au/contact">Contact</a></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-wordmark">VECTRUM</span>
+    <span class="footer-meta">· SectorDrop</span>
+  </div>
+  <div class="footer-right">
+    <div class="footer-meta">© 2026 VECTRUM · All rights reserved</div>
+    <div class="footer-meta" style="margin-top:0.3rem;">
+      <a href="mailto:connect@vectrum.com.au" style="color:var(--text3);text-decoration:none;">connect@vectrum.com.au</a>
+    </div>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<!-- SheetJS for Excel parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- JSZip for KMZ creation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let parsedData = [];
+let headers    = [];
+
+// ─── RAT CONFIG ──────────────────────────────────────────────────────────────
+const RAT_CONFIG = {
+  '2G':  { radiusKm: 2.0,   order: 1 },
+  '3G':  { radiusKm: 1.5,   order: 2 },
+  '4G':  { radiusKm: 1.0,   order: 3 },
+  'LTE': { radiusKm: 1.0,   order: 3 },
+  '5G':  { radiusKm: 0.6,   order: 4 },
+  'NR':  { radiusKm: 0.6,   order: 4 },
+};
+
+function getRATKey(val) {
+  if (!val) return '4G';
+  const v = String(val).toUpperCase().trim();
+  if (v.includes('5G') || v.includes('NR'))  return '5G';
+  if (v.includes('4G') || v.includes('LTE')) return '4G';
+  if (v.includes('3G') || v.includes('UMTS')) return '3G';
+  if (v.includes('2G') || v.includes('GSM'))  return '2G';
+  return '4G';
+}
+
+function getRATColor(key) {
+  const map = { '2G':'color-2g','3G':'color-3g','4G':'color-4g','5G':'color-5g' };
+  const id = map[key] || 'color-4g';
+  return document.getElementById(id).value;
+}
+
+// ─── FILE HANDLING ────────────────────────────────────────────────────────────
+const dropzone  = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      let rows = [];
+      if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+        // CSV parse
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(l => l.trim());
+        headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+        rows = lines.slice(1).map(line => {
+          const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+          const obj = {};
+          headers.forEach((h, i) => obj[h] = vals[i] || '');
+          return obj;
+        }).filter(r => Object.values(r).some(v => v));
+      } else {
+        // Excel parse
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        if (rows.length) headers = Object.keys(rows[0]);
+        else { headers = []; }
+      }
+
+      if (!rows.length) throw new Error('No data rows found in file.');
+
+      parsedData = rows;
+      updateColumnDropdowns();
+      showMsg('success', `✓ Loaded ${rows.length} rows · ${headers.length} columns`);
+      showFileLoaded(file.name);
+      document.getElementById('btn-generate').disabled = false;
+      renderPreview();
+    } catch(err) {
+      showMsg('error', 'Could not parse file: ' + err.message);
+    }
+  };
+  if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+    reader.readAsText(file);
+  } else {
+    reader.readAsBinaryString(file);
+  }
+}
+
+function showFileLoaded(name) {
+  const el = document.getElementById('file-loaded');
+  document.getElementById('file-name').textContent = name;
+  el.classList.add('visible');
+}
+
+function updateColumnDropdowns() {
+  const ids = ['col-site','col-lat','col-lon','col-rat','col-azimuth','col-height'];
+  const defaults = { 'col-site':['SiteID','Site_ID','site','SITE'],
+                     'col-lat':['Lat','LAT','Latitude','latitude'],
+                     'col-lon':['Lon','LON','Longitude','longitude'],
+                     'col-rat':['RAT','rat','Technology','tech'],
+                     'col-azimuth':['Azimuth','AZ','azimuth','Bearing'],
+                     'col-height':['Height','HEIGHT','height','TowerHeight','tower_height'] };
+  ids.forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    if (id === 'col-height') {
+      const opt = document.createElement('option');
+      opt.value = 'none'; opt.textContent = '— Not in data (use default)';
+      sel.appendChild(opt);
+    }
+    headers.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = h; opt.textContent = h;
+      sel.appendChild(opt);
+    });
+    // Auto-select matching header
+    const guesses = defaults[id] || [];
+    for (const g of guesses) {
+      const match = headers.find(h => h.toLowerCase() === g.toLowerCase());
+      if (match) { sel.value = match; break; }
+    }
+  });
+}
+
+// ─── PREVIEW ─────────────────────────────────────────────────────────────────
+function renderPreview() {
+  if (!parsedData.length) return;
+  const svg = document.getElementById('sector-svg');
+  const empty = document.getElementById('preview-empty');
+  empty.style.display = 'none';
+  svg.style.display = 'block';
+
+  const sectors = buildSectors();
+  if (!sectors.length) return;
+
+  // Normalize coordinates to -1..1 space for SVG
+  const lats = sectors.map(s => s.lat);
+  const lons = sectors.map(s => s.lon);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons);
+  const dLat = maxLat - minLat || 0.01;
+  const dLon = maxLon - minLon || 0.01;
+  const scale = 1.3;
+
+  const toX = lon => ((lon - minLon) / dLon - 0.5) * 2 * scale;
+  const toY = lat => -((lat - minLat) / dLat - 0.5) * 2 * scale;
+
+  svg.innerHTML = '';
+  // Sort by RAT order (2G first = bottom layer in SVG)
+  const sorted = [...sectors].sort((a,b) => (RAT_CONFIG[a.rat]?.order||3) - (RAT_CONFIG[b.rat]?.order||3));
+
+  sorted.forEach(s => {
+    const cx = toX(s.lon), cy = toY(s.lat);
+    const r = 0.12 * (RAT_CONFIG[s.rat]?.radiusKm || 1.0) / 2.0;
+    const beamHalf = (parseInt(document.getElementById('beamwidth').value) / 2) * Math.PI / 180;
+    const az = (s.azimuth - 90) * Math.PI / 180; // convert to SVG angle
+
+    const lx = cx + r * Math.cos(az - beamHalf);
+    const ly = cy + r * Math.sin(az - beamHalf);
+    const rx_ = cx + r * Math.cos(az + beamHalf);
+    const ry_ = cy + r * Math.sin(az + beamHalf);
+
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', `${cx},${cy} ${lx},${ly} ${rx_},${ry_}`);
+    poly.setAttribute('fill', getRATColor(s.rat));
+    poly.setAttribute('fill-opacity', '0.55');
+    poly.setAttribute('stroke', getRATColor(s.rat));
+    poly.setAttribute('stroke-width', '0.008');
+    svg.appendChild(poly);
+
+    // Site dot
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy);
+    circle.setAttribute('r', '0.018');
+    circle.setAttribute('fill', '#ffffff');
+    circle.setAttribute('fill-opacity', '0.6');
+    svg.appendChild(circle);
+  });
+
+  document.getElementById('preview-count').textContent = `${sectors.length} sectors · ${[...new Set(sectors.map(s=>s.siteId))].length} sites`;
+}
+
+// ─── SECTOR BUILDER ───────────────────────────────────────────────────────────
+function buildSectors() {
+  const colSite    = document.getElementById('col-site').value;
+  const colLat     = document.getElementById('col-lat').value;
+  const colLon     = document.getElementById('col-lon').value;
+  const colRat     = document.getElementById('col-rat').value;
+  const colAzimuth = document.getElementById('col-azimuth').value;
+  const colHeight  = document.getElementById('col-height').value;
+  const defHeight  = parseFloat(document.getElementById('default-height').value) || 30;
+
+  return parsedData.map(row => {
+    const lat = parseFloat(row[colLat]);
+    const lon = parseFloat(row[colLon]);
+    const az  = parseFloat(row[colAzimuth]);
+    if (isNaN(lat) || isNaN(lon) || isNaN(az)) return null;
+    const rat = getRATKey(row[colRat]);
+    const height = colHeight !== 'none' ? (parseFloat(row[colHeight]) || defHeight) : defHeight;
+    return {
+      siteId:  String(row[colSite] || ''),
+      lat, lon, az, rat, height,
+      azimuth: az
+    };
+  }).filter(Boolean);
+}
+
+// ─── GENERATE BUTTON ─────────────────────────────────────────────────────────
+document.getElementById('btn-generate').addEventListener('click', () => {
+  const sectors = buildSectors();
+  if (!sectors.length) { showMsg('error', 'No valid sector rows found. Check column mapping.'); return; }
+
+  try {
+    const kmz = generateKMZ(sectors);
+    const url = URL.createObjectURL(kmz);
+    const dl = document.getElementById('btn-download');
+    dl.href = url;
+    dl.download = 'SectorDrop.kmz';
+
+    document.getElementById('dl-count').textContent = sectors.length;
+    document.getElementById('dl-sites').textContent = [...new Set(sectors.map(s=>s.siteId))].length;
+    document.getElementById('download-strip').classList.add('visible');
+    showMsg('success', `✓ KMZ ready · ${sectors.length} sectors across ${[...new Set(sectors.map(s=>s.siteId))].length} sites`);
+    renderPreview();
+  } catch(err) {
+    showMsg('error', 'KMZ generation failed: ' + err.message);
+  }
+});
+
+// ─── KMZ GENERATOR ───────────────────────────────────────────────────────────
+function generateKMZ(sectors) {
+  const beamHalf = parseInt(document.getElementById('beamwidth').value) / 2;
+  const byRat = {};
+  sectors.forEach(s => {
+    if (!byRat[s.rat]) byRat[s.rat] = [];
+    byRat[s.rat].push(s);
+  });
+
+  // Build KML
+  let kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+  <name>SectorDrop — VECTRUM</name>
+  <description>Generated by SectorDrop (vectrum.com.au/sectordrop)</description>
+`;
+
+  // Styles
+  const ratKeys = ['2G','3G','4G','5G'];
+  ratKeys.forEach(rat => {
+    const hex = getRATColor(rat).replace('#','');
+    const r = hex.substring(0,2), g = hex.substring(2,4), b = hex.substring(4,6);
+    const kmlColor = `8c${b}${g}${r}`;
+    const kmlColorLine = `ff${b}${g}${r}`;
+    kml += `  <Style id="style_${rat}">
+    <LineStyle><color>${kmlColorLine}</color><width>1</width></LineStyle>
+    <PolyStyle><color>${kmlColor}</color><fill>1</fill><outline>1</outline></PolyStyle>
+  </Style>\n`;
+  });
+
+  // Folders per RAT (ordered 2G→5G)
+  ratKeys.forEach(rat => {
+    if (!byRat[rat]) return;
+    kml += `  <Folder><name>${rat} Sectors</name>\n`;
+    byRat[rat].forEach(s => {
+      const r = RAT_CONFIG[rat]?.radiusKm || 1.0;
+      const pts = sectorPolygon(s.lat, s.lon, s.azimuth, beamHalf, r, s.height);
+      kml += `    <Placemark>
+      <name>${s.siteId} · ${rat} · ${Math.round(s.azimuth)}°</name>
+      <description>Site: ${s.siteId} | RAT: ${rat} | Azimuth: ${s.azimuth}° | Height: ${s.height}m AGL</description>
+      <styleUrl>#style_${rat}</styleUrl>
+      <Polygon>
+        <extrude>0</extrude>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <outerBoundaryIs><LinearRing><coordinates>
+${pts}
+        </coordinates></LinearRing></outerBoundaryIs>
+      </Polygon>
+    </Placemark>\n`;
+    });
+    kml += `  </Folder>\n`;
+  });
+
+  // Site markers folder
+  const sites = {};
+  sectors.forEach(s => { if (!sites[s.siteId]) sites[s.siteId] = s; });
+  kml += `  <Folder><name>Site Markers</name>\n`;
+  Object.values(sites).forEach(s => {
+    kml += `    <Placemark>
+      <name>${s.siteId}</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>${s.lon},${s.lat},${s.height}</coordinates></Point>
+    </Placemark>\n`;
+  });
+  kml += `  </Folder>\n`;
+
+  kml += `</Document>\n</kml>`;
+
+  // Pack into KMZ (ZIP with doc.kml)
+  const zip = new JSZip();
+  zip.file('doc.kml', kml);
+  const blob = zip.generate({ type: 'blob', compression: 'DEFLATE' });
+  return blob;
+}
+
+// ─── SECTOR POLYGON ───────────────────────────────────────────────────────────
+function sectorPolygon(lat, lon, azimuth, beamHalf, radiusKm, height) {
+  const R = 6371; // Earth radius km
+  const latR = lat * Math.PI / 180;
+  const lonR = lon * Math.PI / 180;
+  const d    = radiusKm / R;
+  const pts  = [];
+
+  // Center point (tip)
+  pts.push([lon, lat, height]);
+
+  // Arc from left edge to right edge (20 steps)
+  const steps = 20;
+  for (let i = 0; i <= steps; i++) {
+    const angle = ((azimuth - beamHalf) + (2 * beamHalf * i / steps)) * Math.PI / 180;
+    const pLat = Math.asin(Math.sin(latR) * Math.cos(d) + Math.cos(latR) * Math.sin(d) * Math.cos(angle));
+    const pLon = lonR + Math.atan2(Math.sin(angle) * Math.sin(d) * Math.cos(latR), Math.cos(d) - Math.sin(latR) * Math.sin(pLat));
+    pts.push([pLon * 180 / Math.PI, pLat * 180 / Math.PI, height]);
+  }
+
+  // Close polygon back to tip
+  pts.push([lon, lat, height]);
+
+  return pts.map(p => `          ${p[0].toFixed(7)},${p[1].toFixed(7)},${p[2]}`).join('\n');
+}
+
+// ─── TEMPLATE DOWNLOAD ───────────────────────────────────────────────────────
+document.getElementById('btn-dl-template').addEventListener('click', () => {
+  const csv = `SiteID,Lat,Lon,RAT,Azimuth,Height
+SITE_001,-33.8688,151.2093,4G,0,35
+SITE_001,-33.8688,151.2093,4G,120,35
+SITE_001,-33.8688,151.2093,4G,240,35
+SITE_002,-33.8750,151.2150,2G,60,40
+SITE_002,-33.8750,151.2150,2G,180,40
+SITE_002,-33.8750,151.2150,2G,300,40
+SITE_003,-33.8600,151.2200,5G,30,30
+SITE_003,-33.8600,151.2200,5G,150,30
+SITE_003,-33.8600,151.2200,5G,270,30`;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SectorDrop_Template.csv';
+  a.click();
+});
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function showMsg(type, text) {
+  ['error','success'].forEach(t => {
+    const el = document.getElementById('msg-' + t);
+    el.classList.remove('visible');
+    el.textContent = '';
+  });
+  const el = document.getElementById('msg-' + type);
+  el.textContent = text;
+  el.classList.add('visible');
+}
+
+// Update preview when colours/settings change
+['color-2g','color-3g','color-4g','color-5g','beamwidth'].forEach(id => {
+  document.getElementById(id).addEventListener('change', renderPreview);
+});
+['col-site','col-lat','col-lon','col-rat','col-azimuth'].forEach(id => {
+  document.getElementById(id).addEventListener('change', renderPreview);
+});
+</script>
+
+</body>
+</html>
