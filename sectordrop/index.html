@@ -1485,13 +1485,17 @@ function buildSectors() {
 }
 
 // ─── GENERATE BUTTON ─────────────────────────────────────────────────────────
-document.getElementById('btn-generate').addEventListener('click', () => {
+document.getElementById('btn-generate').addEventListener('click', async () => {
   const sectors = buildSectors();
   if (!sectors.length) { showMsg('error', 'No valid sector rows found. Check column mapping.'); return; }
 
+  const btn = document.getElementById('btn-generate');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+
   try {
-    const kmz = generateKMZ(sectors);
-    const url = URL.createObjectURL(kmz);
+    const blob = await generateKMZ(sectors);
+    const url = URL.createObjectURL(blob);
     const dl = document.getElementById('btn-download');
     dl.href = url;
     dl.download = 'SectorDrop.kmz';
@@ -1503,6 +1507,9 @@ document.getElementById('btn-generate').addEventListener('click', () => {
     renderPreview();
   } catch(err) {
     showMsg('error', 'KMZ generation failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⚡ Generate KMZ';
   }
 });
 
@@ -1576,8 +1583,7 @@ ${pts}
   // Pack into KMZ (ZIP with doc.kml)
   const zip = new JSZip();
   zip.file('doc.kml', kml);
-  const blob = zip.generate({ type: 'blob', compression: 'DEFLATE' });
-  return blob;
+  return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
 
 // ─── SECTOR POLYGON ───────────────────────────────────────────────────────────
