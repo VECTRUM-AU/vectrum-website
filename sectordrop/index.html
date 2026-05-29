@@ -1283,12 +1283,12 @@ let headers    = [];
 
 // ─── RAT CONFIG ──────────────────────────────────────────────────────────────
 const RAT_CONFIG = {
-  '2G':  { radiusKm: 2.0,   order: 1 },
-  '3G':  { radiusKm: 1.5,   order: 2 },
-  '4G':  { radiusKm: 1.0,   order: 3 },
-  'LTE': { radiusKm: 1.0,   order: 3 },
-  '5G':  { radiusKm: 0.6,   order: 4 },
-  'NR':  { radiusKm: 0.6,   order: 4 },
+  '2G':  { radiusKm: 0.10,  order: 1 },
+  '3G':  { radiusKm: 0.09,  order: 2 },
+  '4G':  { radiusKm: 0.08,  order: 3 },
+  'LTE': { radiusKm: 0.08,  order: 3 },
+  '5G':  { radiusKm: 0.07,  order: 4 },
+  'NR':  { radiusKm: 0.07,  order: 4 },
 };
 
 function getRATKey(val) {
