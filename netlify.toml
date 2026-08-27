@@ -1,6 +1,9 @@
 [build]
   publish = "."
 
+[functions]
+  directory = "netlify/functions"
+
 # Override Netlify injected headers that break robots.txt validation
 [[headers]]
   for = "/robots.txt"
