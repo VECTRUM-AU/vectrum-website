@@ -26,6 +26,36 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Domain normalization — www and http both redirect to the canonical https, non-www host
+[[redirects]]
+  from = "https://www.vectrum.com.au/*"
+  to = "https://vectrum.com.au/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://vectrum.com.au/*"
+  to = "https://vectrum.com.au/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.vectrum.com.au/*"
+  to = "https://vectrum.com.au/:splat"
+  status = 301
+  force = true
+
+# Folder routes — explicit trailing-slash redirects instead of relying on Netlify's implicit default
+[[redirects]]
+  from = "/razum"
+  to = "/razum/"
+  status = 301
+
+[[redirects]]
+  from = "/sectordrop"
+  to = "/sectordrop/"
+  status = 301
+
 # Clean URL redirects (so /privacy works as well as /privacy.html)
 [[redirects]]
   from = "/privacy"
