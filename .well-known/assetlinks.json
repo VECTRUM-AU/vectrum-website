@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "au.com.vectrum.razum",
+      "sha256_cert_fingerprints":
+        ["4C:3B:A9:CA:13:CF:84:18:95:05:A6:3D:BE:93:A9:F4:14:56:12:4B:BF:4E:5F:32:F3:52:3A:17:4B:15:5E:F4"]
+    }
+  }
+]
