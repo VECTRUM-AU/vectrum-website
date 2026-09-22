@@ -1,9 +1,19 @@
 [build]
   publish = "."
 
+[functions]
+  directory = "netlify/functions"
+
 # Override Netlify injected headers that break robots.txt validation
 [[headers]]
   for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain"
+    X-Robots-Tag = ""
+
+# Serve app-ads.txt as plain text for AdMob crawler
+[[headers]]
+  for = "/app-ads.txt"
   [headers.values]
     Content-Type = "text/plain"
     X-Robots-Tag = ""
