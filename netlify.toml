@@ -9,8 +9,12 @@
 [functions]
   directory = "netlify/functions"
 
-[edge_functions]
-  directory = "netlify/edge-functions"
+# No [edge_functions] block on purpose. Netlify's schema makes that an ARRAY
+# of tables ([[edge_functions]] with path/function per entry) for manual
+# routing, unlike [functions] which is a plain table — declaring it as a
+# table fails the config parse before the build starts. None of it is needed:
+# netlify/edge-functions/ is the default scan location, and the function
+# declares its own route with `export const config = { path: ... }`.
 
 # Speed-test payloads must never be served from a cache — a cached hit is
 # read at disk speed and reports a throughput figure that has nothing to do
