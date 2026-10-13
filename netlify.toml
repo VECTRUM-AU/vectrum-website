@@ -1,8 +1,27 @@
 [build]
   publish = "."
+  # Generates speedtest/testfile-*.bin. They are deliberately not committed:
+  # random bytes do not belong in git, and the zero-filled file they replace
+  # was compressible enough to falsify download measurements. See
+  # tools/gen-speedtest-files.js.
+  command = "node tools/gen-speedtest-files.js"
 
 [functions]
   directory = "netlify/functions"
+
+[edge_functions]
+  directory = "netlify/edge-functions"
+
+# Speed-test payloads must never be served from a cache — a cached hit is
+# read at disk speed and reports a throughput figure that has nothing to do
+# with the radio. The app also appends a cache-busting query parameter; this
+# is the belt to that pair of braces. Content-Type is pinned so the payloads
+# stay outside any content-type-driven compression rule.
+[[headers]]
+  for = "/speedtest/*"
+  [headers.values]
+    Content-Type = "application/octet-stream"
+    Cache-Control = "no-store, no-cache, must-revalidate"
 
 # Override Netlify injected headers that break robots.txt validation
 [[headers]]

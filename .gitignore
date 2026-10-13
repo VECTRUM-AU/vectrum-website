@@ -1,0 +1,6 @@
+# Speed-test payloads are generated at build time by
+# tools/gen-speedtest-files.js — random bytes, ~91 MB, not for git.
+speedtest/testfile-*.bin
+
+node_modules/
+.netlify/
