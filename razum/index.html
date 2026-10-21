@@ -594,14 +594,19 @@ footer {
   <div class="fn-grid">
     <div class="fn-copy">
       <div class="fn-num">07 — Map</div>
-      <h2>Your own coverage, from your own data.</h2>
+      <h2>Your coverage and your plan, on the same map.</h2>
       <p class="lede">Every recorded measurement is geo-tagged, so your sessions become a map of the coverage you have actually had.</p>
       <p>No crowdsourcing and no backend: the heatmap is built on this device from this device's own recordings. Choose the scope — all time, the last 7 or 30 days, or a specific set of sessions — and the bins recompute against it.</p>
       <p>Two metrics are available. <b>Signal</b> normalises every row against its own RAT's range before averaging, so a bin that mixes an LTE pass with a 5G pass still means something. <b>Interference</b> runs the same rows through the Quadar derivation and maps the shortfall instead, which puts the two tools on the same geography.</p>
+      <p>And it is not only your measurements. <b>Import your own site plan</b> as a CSV — export a template from the app, fill it in, import it back — and the map draws one pin per site and a wedge per sector. The sector actually carrying you is matched by cell ID, or by channel and code, and lit in brand teal against the rest, with a line drawn from you to it.</p>
+      <p>That is the question a plan exists to answer: not where coverage is supposed to be, but which planned sector you are standing in right now.</p>
       <ul class="fn-list">
         <li><b>On-device only</b> — your recordings, never uploaded</li>
         <li><b>Scope</b> — all time, last 7 days, last 30 days, or chosen sessions</li>
         <li><b>Two metrics</b> — signal quality or derived interference shortfall</li>
+        <li><b>Site plan overlay</b> — site pins and azimuth sector wedges from your own CSV</li>
+        <li><b>Live sector match</b> — the planned sector you are on, highlighted</li>
+        <li><b>Live cell layers</b> — serving cell pin, neighbour pins, and a timing-advance distance ring</li>
         <li><b>Serving cell card</b> with operator, eNB/gNB, sector, PLMN, TAC, PCI and live RSRP/SINR</li>
       </ul>
     </div>
@@ -799,11 +804,15 @@ footer {
   <div class="container">
     <div class="section-label">Free and Pro</div>
     <h2 class="section-title">Free to use. Pro to go deeper.</h2>
-    <p class="section-sub">The live decode — dashboard, serving and neighbour cells, band plots, events, diagnostics and the speed test — is free. Pro unlocks the analysis and the field-testing controls.</p>
+    <p class="section-sub">The live decode — dashboard, serving and neighbour cells, band plots, events, diagnostics and the speed test — is free. Pro unlocks the analysis and the field-testing controls. <b>Both are one-time purchases, not subscriptions</b> — AU$2.99 to remove ads, AU$34.99 for Pro, including features added later.</p>
     <div class="pro-grid">
       <div class="pro-card">
         <h3>Quadar</h3>
         <p>The derived interference radar, with co-channel attribution by PCI.</p>
+      </div>
+      <div class="pro-card">
+        <h3>Site data import</h3>
+        <p>Your own site plan on the map — pins, sector wedges, and the sector you are on matched live.</p>
       </div>
       <div class="pro-card">
         <h3>Session playback</h3>
