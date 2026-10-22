@@ -449,23 +449,20 @@ footer {
       <div class="fn-num">02 — Cells · Serving</div>
       <h2>Decoded, not displayed.</h2>
       <p class="lede">Android hands an app a raw cell identity. RAZUM takes it apart.</p>
-      <p>The LTE cell ID splits into eNB and sector, with the raw CID kept visible beside it. EARFCN resolves to a band and a real downlink frequency in MHz. On NR, the NCI splits into gNB ID and cell index, and the NR-ARFCN resolves to band and frequency the same way.</p>
+      <p>The LTE cell ID splits into eNB and sector, with the raw CID kept visible beside it. EARFCN resolves to a band and a real downlink frequency in MHz. On NR, the NR-ARFCN resolves to band and frequency the same way, and where the network reports an NR Cell Identity it splits into gNB ID and cell index.</p>
+      <p><b>Where it does not, RAZUM says so rather than deriving one.</b> On a 5G NSA secondary cell many modems report no NR Cell Identity at all — the figure some tools print there is the decode of an “unavailable” marker, identical on every network. RAZUM shows <em>not decoded</em>, and the PCI, ARFCN, band and signal it does have are measured.</p>
       <p>Where Android or the modem refuses a value, RAZUM says which — <em>Modem Restriction</em>, or <em>not exposed by Android for NR cells</em> — instead of printing a zero and letting you believe it.</p>
       <ul class="fn-list">
         <li><b>LTE</b> — eNB ID, sector, raw CID, PCI, TAC, MCC-MNC, PLMN, EARFCN, band, DL frequency, bandwidth, timing advance</li>
-        <li><b>5G NR</b> — gNB ID, cell index, raw NCI, PCI, NR-ARFCN, band, DL frequency, SS-RSRP, SS-RSRQ, SS-SINR, CSI-RSRP</li>
+        <li><b>5G NR</b> — PCI, NR-ARFCN, band, DL frequency, SS-RSRP, SS-RSRQ, SS-SINR, CSI-RSRP, plus gNB ID, cell index and raw NCI when the network reports an identity</li>
         <li><b>UMTS and GSM</b> — RNC/CID, PSC, UARFCN, RSCP, Ec/No · LAC/CID, BSIC, ARFCN</li>
-        <li><b>Honest gaps</b> — every unavailable field carries the reason it is unavailable</li>
+        <li><b>Honest gaps</b> — every unavailable field carries the reason it is unavailable, and a value the modem did not report is never derived into one</li>
       </ul>
     </div>
-    <div class="fn-shots cols-2">
+    <div class="fn-shots cols-1">
       <figure class="shot">
         <a href="assets/serving-lte.jpg" target="_blank" rel="noopener"><img src="assets/serving-lte.jpg" alt="RAZUM serving cell screen for LTE showing eNB 141552, sector 59, PCI 47, TAC 52503, EARFCN 3350 on band 7 and a 2680 MHz downlink" width="600" height="1333" loading="lazy"></a>
         <figcaption>LTE serving cell</figcaption>
-      </figure>
-      <figure class="shot">
-        <a href="assets/serving-nr.jpg" target="_blank" rel="noopener"><img src="assets/serving-nr.jpg" alt="RAZUM serving cell screen for 5G NR band n78 showing gNB ID 1048575, cell index 255, raw NCI, NR-ARFCN 633312 and CSI-RSRP marked as a modem restriction" width="600" height="1333" loading="lazy"></a>
-        <figcaption>5G NR n78 decode</figcaption>
       </figure>
     </div>
   </div>
@@ -779,7 +776,7 @@ footer {
         <h3>Identity</h3>
         <ul>
           <li>eNB ID · sector · raw CID · PCI</li>
-          <li>gNB ID · cell index · raw NCI</li>
+          <li>gNB ID · cell index · raw NCI <em>(when reported)</em></li>
           <li>TAC · LAC · MCC-MNC · PLMN</li>
           <li>EARFCN · NR-ARFCN · UARFCN · ARFCN · band · DL frequency</li>
         </ul>
