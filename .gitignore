@@ -4,3 +4,6 @@ speedtest/testfile-*.bin
 
 node_modules/
 .netlify/
+
+# Local working backups and scratch screenshots — not site content
+untracked-backup/

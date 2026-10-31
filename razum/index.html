@@ -450,11 +450,11 @@ footer {
       <h2>Decoded, not displayed.</h2>
       <p class="lede">Android hands an app a raw cell identity. RAZUM takes it apart.</p>
       <p>The LTE cell ID splits into eNB and sector, with the raw CID kept visible beside it. EARFCN resolves to a band and a real downlink frequency in MHz. On NR, the NR-ARFCN resolves to band and frequency the same way, and where the network reports an NR Cell Identity it splits into gNB ID and cell index.</p>
-      <p><b>Where it does not, RAZUM says so rather than deriving one.</b> On a 5G NSA secondary cell many modems report no NR Cell Identity at all — the figure some tools print there is the decode of an “unavailable” marker, identical on every network. RAZUM shows <em>not decoded</em>, and the PCI, ARFCN, band and signal it does have are measured.</p>
+      <p><b>On 5G NSA there is no NR Cell Identity to report, and RAZUM says so instead of inventing one.</b> The NCI is broadcast only in NR SIB1. In EN-DC the handset is never given it — the secondary cell is configured by dedicated signalling that carries physical cell ID and frequency and nothing else, and an NSA-only carrier may not broadcast SIB1 at all. So RAZUM identifies the secondary cell by <em>PCI, NR-ARFCN and band</em>, states that the NCI is not signalled, and points at the LTE anchor — which is the connection’s actual cell identity. A gNB ID printed in that row by any unrooted tool is either the LTE anchor’s or the decode of an “unavailable” marker.</p>
       <p>Where Android or the modem refuses a value, RAZUM says which — <em>Modem Restriction</em>, or <em>not exposed by Android for NR cells</em> — instead of printing a zero and letting you believe it.</p>
       <ul class="fn-list">
         <li><b>LTE</b> — eNB ID, sector, raw CID, PCI, TAC, MCC-MNC, PLMN, EARFCN, band, DL frequency, bandwidth, timing advance</li>
-        <li><b>5G NR</b> — PCI, NR-ARFCN, band, DL frequency, SS-RSRP, SS-RSRQ, SS-SINR, CSI-RSRP, plus gNB ID, cell index and raw NCI when the network reports an identity</li>
+        <li><b>5G NR</b> — PCI, NR-ARFCN, band, DL frequency, SS-RSRP, SS-RSRQ, SS-SINR, CSI-RSRP — plus gNB ID, cell index and raw NCI on <b>5G SA</b>, where the handset reads them from SIB1</li>
         <li><b>UMTS and GSM</b> — RNC/CID, PSC, UARFCN, RSCP, Ec/No · LAC/CID, BSIC, ARFCN</li>
         <li><b>Honest gaps</b> — every unavailable field carries the reason it is unavailable, and a value the modem did not report is never derived into one</li>
       </ul>
@@ -776,7 +776,7 @@ footer {
         <h3>Identity</h3>
         <ul>
           <li>eNB ID · sector · raw CID · PCI</li>
-          <li>gNB ID · cell index · raw NCI <em>(when reported)</em></li>
+          <li>gNB ID · cell index · raw NCI <em>(5G SA)</em></li>
           <li>TAC · LAC · MCC-MNC · PLMN</li>
           <li>EARFCN · NR-ARFCN · UARFCN · ARFCN · band · DL frequency</li>
         </ul>

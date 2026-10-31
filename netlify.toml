@@ -16,6 +16,26 @@
 # netlify/edge-functions/ is the default scan location, and the function
 # declares its own route with `export const config = { path: ... }`.
 
+# v4zz — /ping.txt is the LATENCY probe, and its caching rule is the exact
+# opposite of the payload rule below, on purpose.
+#
+# RAZUM measured RTT by sending HEAD to a payload file. Those are no-store, so
+# Cloudflare (which fronts this site) could not serve them from its Sydney PoP
+# and pulled from Netlify origin on every probe. Measured from Penrith: TCP
+# connect ~20 ms and TLS ~40 ms, both stable, then TTFB swinging between 69 ms
+# and 663 ms. The app was reporting that swing as the user's round-trip time,
+# which also made the jitter figure — deviation between consecutive probes —
+# largely a measurement of our own origin rather than of their radio link.
+#
+# This file is one byte and immutable, so after the first request per PoP it is
+# served from the edge nearest the user and the origin hop disappears. Never
+# cache-bust this URL from the app: a miss puts the origin straight back in.
+[[headers]]
+  for = "/ping.txt"
+  [headers.values]
+    Content-Type = "text/plain"
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Speed-test payloads must never be served from a cache — a cached hit is
 # read at disk speed and reports a throughput figure that has nothing to do
 # with the radio. The app also appends a cache-busting query parameter; this
