@@ -1514,8 +1514,28 @@ document.getElementById('btn-generate').addEventListener('click', async () => {
   }
 });
 
+// ─── SITE MARKER ICON ────────────────────────────────────────────────────────
+// A white dot with a dark rim: legible against both satellite imagery and the
+// road basemap, unlike a single flat colour. Drawn here rather than shipped as
+// a binary so the page stays a single self-contained file.
+function makeSiteDotPNG() {
+  const size = 64;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const mid = size / 2;
+  ctx.beginPath();
+  ctx.arc(mid, mid, size * 0.26, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.lineWidth = size * 0.10;
+  ctx.strokeStyle = '#111111';
+  ctx.stroke();
+  return new Promise(resolve => c.toBlob(resolve, 'image/png'));
+}
+
 // ─── KMZ GENERATOR ───────────────────────────────────────────────────────────
-function generateKMZ(sectors) {
+async function generateKMZ(sectors) {
   const beamHalf = parseInt(document.getElementById('beamwidth').value) / 2;
   const byRat = {};
   sectors.forEach(s => {
@@ -1543,6 +1563,21 @@ function generateKMZ(sectors) {
     <PolyStyle><color>${kmlColor}</color><fill>1</fill><outline>1</outline></PolyStyle>
   </Style>\n`;
   });
+
+  // Site marker style. Without an explicit style Google Earth falls back to its
+  // default yellow pushpin, which is both loud over a dense sector plot and
+  // anchored at its tip — so the pin floats above the coordinate it marks.
+  // hotSpot 0.5/0.5 centres this dot on the tower instead. The icon ships
+  // inside the KMZ (files/site-dot.png) rather than as a maps.google.com href,
+  // so it still renders on machines with no internet access.
+  kml += `  <Style id="style_site">
+    <IconStyle>
+      <scale>0.6</scale>
+      <Icon><href>files/site-dot.png</href></Icon>
+      <hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+    <LabelStyle><color>ffffffff</color><scale>0.75</scale></LabelStyle>
+  </Style>\n`;
 
   // Folders per RAT (ordered 2G→5G)
   ratKeys.forEach(rat => {
@@ -1574,6 +1609,7 @@ ${pts}
   Object.values(sites).forEach(s => {
     kml += `    <Placemark>
       <name>${s.siteId}</name>
+      <styleUrl>#style_site</styleUrl>
       <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>${s.lon},${s.lat},${s.height}</coordinates></Point>
     </Placemark>\n`;
   });
@@ -1584,6 +1620,7 @@ ${pts}
   // Pack into KMZ (ZIP with doc.kml)
   const zip = new JSZip();
   zip.file('doc.kml', kml);
+  zip.file('files/site-dot.png', await makeSiteDotPNG());
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
 
