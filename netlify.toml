@@ -61,6 +61,17 @@
     Content-Type = "text/plain"
     X-Robots-Tag = ""
 
+# Serve ads.txt as plain text for the AdSense crawler. This authorizes the
+# VECTRUM publisher account (pub-4775946458713669) to sell inventory on this
+# domain. Without it every ad request on the site is an unauthorized seller,
+# which blocks review and, once live, suppresses fill. app-ads.txt below is
+# the app-side equivalent and is NOT a substitute: AdSense reads ads.txt only.
+[[headers]]
+  for = "/ads.txt"
+  [headers.values]
+    Content-Type = "text/plain"
+    X-Robots-Tag = ""
+
 # Security headers for all pages
 [[headers]]
   for = "/*"
